@@ -4,12 +4,16 @@
         <h5 class="card-title">@PostTitle</h5>
         <h6 class="card-subtitle mb-2 text-muted">Posted @PublishDate.ToShortDateString()</h6>
         <p class="card-text">@PostBodyShort</p>
-        <a href="/PostDetail/@PostId" class="stretched-link"></a>
+        <a href="/@(RedirectToEditPage ? "EditPost" : "PostDetail")/@PostId" class="stretched-link"></a>
     </div>
 </div>
 
 @code {
 
+    [Parameter]
+    public bool RedirectToEditPage { get; set; } = false;
+    
+    
     [Parameter]
     public string PostTitle { get; set; }
 
