@@ -5,7 +5,7 @@ namespace Blogger.Data;
 
 public class ApplicationDbContext : IdentityDbContext
 {
-    public DbSet<User> Users { get; set; }
+    public DbSet<User> BloggerUsers { get; set; }
     
     public DbSet<Post> Posts { get; set; }
     
