@@ -11,6 +11,7 @@
 else
 {
     <h1>@_post.Title</h1>
+    <h5 class="text-muted">Posted by @_post.Author.UserName on the @_post.PublishDate.ToShortDateString()</h5>
     <div>
         @((MarkupString) Markdown.ToHtml(_post.Body, _pipeline))
     </div>

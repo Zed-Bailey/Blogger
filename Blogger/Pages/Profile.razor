@@ -3,16 +3,14 @@
 @using Microsoft.AspNetCore.Identity
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject UserManager<User> UserManager
-@inject PostService Service
 
 <h3>My Posts</h3>
 
 <div class="m-5">
-    @if (!_user.Posts.Any())
+    @if (_user.Posts.Count == 0)
     {
-        <h2>You haven't createed any posts yet</h2>    
+        <h2>You haven't created any posts yet</h2>
     }
-    
     @foreach (var post in _user.Posts)
     {
         var model = new PostCardModel
@@ -42,9 +40,10 @@
 
 @code {
 
-    User _user;
+    User? _user;
     const int MaxLength = 100;
     
+     
     protected override async Task OnInitializedAsync()
     {
         var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
