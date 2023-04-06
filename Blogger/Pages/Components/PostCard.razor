@@ -1,0 +1,24 @@
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">@PostTitle</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Posted @PublishDate.ToShortDateString()</h6>
+        <p class="card-text">@PostBodyShort</p>
+        <a href="/PostDetail/@PostId" class="stretched-link"></a>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string PostTitle { get; set; }
+
+    [Parameter]
+    public string PostBodyShort { get; set; }
+    
+    [Parameter]
+    public DateTime PublishDate { get; set; }
+    
+    [Parameter]
+    public int PostId { get; set; }
+}
