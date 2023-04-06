@@ -38,18 +38,12 @@ public class PostService
 
     public async Task AddPost(Post post)
     {
-        // var user = await _context.Users.FindAsync(userId);
-        // user?.Posts.Add(post);
         _context.Posts.Add(post);
         await _context.SaveChangesAsync();
     }
 
     public async Task UpdatePost(Post post)
     {
-        Console.WriteLine(post.PostId);
-        Console.WriteLine(post.Title);
-        Console.WriteLine(post.Body);
-        
         var first =_context.Posts.FirstOrDefault(x => x.PostId == post.PostId);
         if (first != null)
         {
