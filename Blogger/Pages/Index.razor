@@ -1,0 +1,39 @@
+﻿@page "/"
+@using Blogger.Data
+@inject PostService PostService;
+
+<PageTitle>Index</PageTitle>
+
+<div class="m-5">
+   @foreach(var post in _posts)
+   {
+       
+       string body;
+       if (post.Body.Length > 100)
+       {
+           body = post.Body.Substring(0, MaxLength - 3) + "...";
+       }
+       else
+       {
+           body = post.Body;
+       }
+       
+       
+       <PostCard PostTitle="@(post.Title)" PostBodyShort="@body" PublishDate="@post.PublishDate" PostId="@post.PostId"/>
+       
+       
+   } 
+</div>
+
+
+
+@code
+{
+    List<Post> _posts;
+    const int MaxLength = 100;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        _posts = await PostService.GetAllPosts();
+    }
+}
