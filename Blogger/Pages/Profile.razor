@@ -1,0 +1,46 @@
+@page "/Profile"
+@using Blogger.Data
+@using Microsoft.AspNetCore.Identity
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<User> UserManager
+@inject PostService Service
+
+<h3>My Posts</h3>
+
+<div class="m-5">
+   @foreach(var post in _user.Posts)
+   {
+       
+       string body;
+       if (post.Body.Length > 100)
+       {
+           body = post.Body.Substring(0, MaxLength - 3) + "...";
+       }
+       else
+       {
+           body = post.Body;
+       }
+       
+       
+       <PostCard PostTitle="@(post.Title)" PostBodyShort="@body" PublishDate="@post.PublishDate" PostId="@post.PostId"/>
+   } 
+   
+</div>
+
+
+@code {
+
+    User _user;
+    const int MaxLength = 100;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = state.User;
+        if (user.Identity.IsAuthenticated)
+        {
+            _user = await UserManager.GetUserAsync(user);
+        }
+    }
+
+}
