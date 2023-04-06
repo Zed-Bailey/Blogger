@@ -1,28 +1,16 @@
+@using Blogger.Data
 
-<div class="card">
+<div class="card m-2">
     <div class="card-body">
-        <h5 class="card-title">@PostTitle</h5>
-        <h6 class="card-subtitle mb-2 text-muted">Posted @PublishDate.ToShortDateString()</h6>
-        <p class="card-text">@PostBodyShort</p>
-        <a href="/@(RedirectToEditPage ? "EditPost" : "PostDetail")/@PostId" class="stretched-link"></a>
+        <h5 class="card-title">@Model.Title</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Posted on the @Model.Date.ToShortDateString() by @Model.Author</h6>
+        <p class="card-text">@Model.Body</p>
+        <a href="/@(Model.RedirectToEditPage ? "EditPost" : "PostDetail")/@Model.PostId" class="stretched-link"></a>
     </div>
 </div>
 
 @code {
 
     [Parameter]
-    public bool RedirectToEditPage { get; set; } = false;
-    
-    
-    [Parameter]
-    public string PostTitle { get; set; }
-
-    [Parameter]
-    public string PostBodyShort { get; set; }
-    
-    [Parameter]
-    public DateTime PublishDate { get; set; }
-    
-    [Parameter]
-    public int PostId { get; set; }
+    public PostCardModel Model { get; set; }
 }
