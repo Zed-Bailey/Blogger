@@ -1,0 +1,50 @@
+@page "/PostDetail/{PostId:int}"
+@using Blogger.Data
+@using Markdig
+@inject PostService Service
+
+
+@if (_showError)
+{
+    <h2>Error while fetching the post</h2>
+}
+else
+{
+    <h1>@_post.Title</h1>
+    <div>
+        @((MarkupString) Markdown.ToHtml(_post.Body, _pipeline))
+    </div>
+}
+
+
+
+@code {
+
+    [Parameter]
+    public int PostId { get; set; }
+
+    bool _showError = false;
+    
+    Post _post;
+    MarkdownPipeline _pipeline;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var p = await Service.GetPostById(PostId);
+        if (p == null)
+        {
+            _showError = true;
+            return;
+        }
+        
+        _pipeline = new MarkdownPipelineBuilder()
+            .UseAdvancedExtensions()
+            .UseSoftlineBreakAsHardlineBreak()
+            .Build();
+        
+        _post = p;
+        
+        
+    }
+
+}
