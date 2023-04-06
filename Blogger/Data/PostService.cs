@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
-
 namespace Blogger.Data;
 
 public class PostService
@@ -23,10 +22,12 @@ public class PostService
     /// <returns></returns>
     public async Task<List<Post>> GetRecentPosts()
     {
-        return await _context.Posts
+        var posts = await _context.Posts
+            .Include(x => x.Author)
             .OrderByDescending(x => x.PublishDate)
             .Take(10)
             .ToListAsync();
+        return posts;
     }
 
 
@@ -43,5 +44,37 @@ public class PostService
         await _context.SaveChangesAsync();
     }
 
+    public async Task UpdatePost(Post post)
+    {
+        Console.WriteLine(post.PostId);
+        Console.WriteLine(post.Title);
+        Console.WriteLine(post.Body);
+        
+        var first =_context.Posts.FirstOrDefault(x => x.PostId == post.PostId);
+        if (first != null)
+        {
+            // create an entry
+            var entry = _context.Entry(first);
+            // update it's current values with the new values from the post object
+            entry.CurrentValues.SetValues(post);
+            
+            await _context.SaveChangesAsync();
+        }
+        else
+        {
+            throw new Exception("Could not update post, was null!");
+        }
+        
+        
+    }
+
+    public async Task DeletePost(Post post)
+    {
+        await _context.Posts.FindAsync(post.PostId);
+        _context.Posts.Remove(post);
+        await _context.SaveChangesAsync();
+    }
     
+
+
 }
