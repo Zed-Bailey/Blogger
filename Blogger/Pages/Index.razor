@@ -1,46 +1,14 @@
 ﻿@page "/"
 @using Blogger.Data
-@using Microsoft.AspNetCore.Identity
 @inject PostService PostService;
 
 <PageTitle>Index</PageTitle>
 
-<div class="m-5">
-    @if (!_posts.Any())
-    {
-        <h2>There doesn't seem to be any posts</h2>    
-    } 
-    
-    @foreach (var post in _posts)
-    {
-
-        var model = new PostCardModel
-        {
-            Author = post.Author.UserName ?? "Unknown Author",
-            Date = post.PublishDate,
-            Title = post.Title,
-            PostId = post.PostId
-        };
-        
-        if (post.Body.Length > 100)
-        {
-            model.Body = post.Body.Substring(0, MaxLength - 3) + "...";
-        }
-        else
-        {
-            model.Body = post.Body;
-        }
-
-        <PostCard Model="@model"/>
-    }
-</div>
-
-
+<PostList Posts="@_posts"/>
 
 @code
 {
     List<Post> _posts;
-    const int MaxLength = 100;
     
     protected override async Task OnInitializedAsync()
     {

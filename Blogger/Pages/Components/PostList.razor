@@ -1,0 +1,41 @@
+@using Blogger.Data
+@using System.ComponentModel.DataAnnotations
+
+
+<div class="m-5">
+    @foreach (var post in Posts)
+    {
+        
+        var model = new PostCardModel
+        {
+            Author = post.Author.UserName ?? "Unknown Author",
+            Date = post.PublishDate,
+            Title = post.Title,
+            PostId = post.PostId,
+            RedirectToEditPage = RedirectToEdit
+        };
+        
+        if (post.Body.Length > 100)
+        {
+            model.Body = post.Body.Substring(0, MaxLength - 3) + "...";
+        }
+        else
+        {
+            model.Body = post.Body;
+        }
+
+        <PostCard Model="@model"/>
+    }
+</div>
+
+@code {
+    [Parameter]
+    [Required]
+    public List<Post> Posts { get; set; }
+
+    [Parameter]
+    public bool RedirectToEdit { get; set; } = false;
+
+    const int MaxLength = 100;
+
+}

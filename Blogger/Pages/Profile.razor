@@ -6,37 +6,12 @@
 
 <h3>My Posts</h3>
 
-<div class="m-5">
-    @if (_user.Posts.Count == 0)
-    {
-        <h2>You haven't created any posts yet</h2>
-    }
-    @foreach (var post in _user.Posts)
-    {
-        var model = new PostCardModel
-        {
-            Author = post.Author.UserName ?? "Unknown Author",
-            Date = post.PublishDate,
-            Title = post.Title,
-            PostId = post.PostId,
-            RedirectToEditPage = true
-        };
-    
-        if (post.Body.Length > 100)
-        {
-            model.Body = post.Body.Substring(0, MaxLength - 3) + "...";
-        }
-        else
-        {
-            model.Body = post.Body;
-        }
+@if (_user.Posts.Count == 0)
+{
+    <h2>You haven't created any posts yet</h2>
+}
 
-        <PostCard Model="@model"/>
-        
-    }
-
-</div>
-
+<PostList Posts="@_user.Posts" RedirectToEdit="true"/>
 
 @code {
 
