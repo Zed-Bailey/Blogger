@@ -4,14 +4,25 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject UserManager<User> UserManager
 
-<h3>My Posts</h3>
+<div class="container m-2">
+    <h3>My Posts</h3>
+    
+    @if (_user!= null)
+    {
+        @if (_user.Posts != null && _user.Posts.Any())
+        {
+            <PostList Posts="@_user?.Posts" RedirectToEdit="true"/>   
+        }
+        else
+        {
+            <h2 class="text-center">You haven't created any posts yet</h2>    
+        }
+    }
+</div>
 
-@if (_user.Posts.Count == 0)
-{
-    <h2>You haven't created any posts yet</h2>
-}
 
-<PostList Posts="@_user.Posts" RedirectToEdit="true"/>
+
+
 
 @code {
 
@@ -23,7 +34,7 @@
     {
         var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = state.User;
-        if (user.Identity.IsAuthenticated)
+        if (user.Identity?.IsAuthenticated == true)
         {
             _user = await UserManager.GetUserAsync(user);
         }
