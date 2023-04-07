@@ -68,7 +68,13 @@ public class PostService
         _context.Posts.Remove(post);
         await _context.SaveChangesAsync();
     }
-    
 
 
+
+    public async Task<List<Post>> SearchPosts(string query)
+    {
+        return await _context.Posts
+            .Where(x => x.Title.Contains(query))
+            .ToListAsync();
+    }
 }

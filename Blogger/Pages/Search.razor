@@ -1,0 +1,46 @@
+@page "/Search"
+@using Blogger.Data
+@inject PostService Service
+
+<div class="container">
+    
+    <div class="input-group m-3">
+        <input @bind-value="@_searchQuery" @oninput="InputChanged" class="form-control" placeholder="Search query...">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" @onclick="SearchBtnClicked"><span class="oi oi-magnifying-glass"></span> Search</button>
+        </div>
+    </div>
+
+    @if (_searchClicked)
+    {
+        @if (_posts.Count == 0)
+        {
+            <h5 class="text-center">No results found</h5>
+        }
+        
+        <h6 class="text-muted m-3">@_posts.Count posts</h6>
+        <PostList Posts="@_posts"/>
+    }
+
+</div>
+
+
+@code {
+    string _searchQuery = "";
+    bool _searchClicked = false;
+    
+    List<Post> _posts = new();
+    
+    async Task SearchBtnClicked()
+    {
+        
+        _searchClicked = true;
+        _posts = await Service.SearchPosts(_searchQuery);
+    }
+
+    void InputChanged()
+    {
+        if (_searchClicked)
+            _searchClicked = false;
+    }
+}
