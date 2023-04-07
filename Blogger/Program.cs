@@ -27,7 +27,7 @@ builder.Services
     .AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 
 
-builder.Services.AddScoped<PostService>();
+builder.Services.AddTransient<PostService>();
 
 var app = builder.Build();
 
