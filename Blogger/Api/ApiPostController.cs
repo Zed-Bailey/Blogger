@@ -7,28 +7,54 @@ namespace Blogger.Api;
 [Route("/api/posts")]
 public class ApiPostController : ControllerBase
 {
-    private PostService _service { get; set; }
+    private readonly PostService _service;
     public ApiPostController(PostService service)
     {
         _service = service;
     }
 
 
-    [HttpGet]
-    public async Task<IActionResult> GetAllPosts()
+    /// <summary>
+    /// returns all posts
+    /// eg. /api/posts?page=1
+    /// </summary>
+    /// <param name="page">the page to get, defaults to 0, which returns first page</param>
+    /// <returns></returns>
+    [HttpGet("{page:int?}")]
+    public async Task<IActionResult> GetAllPosts(int page=0)
     {
-        var posts = await _service.GetAllPosts();
-        return Ok(posts.Select( x => new
-        {
-            PostId = x.PostId,
-            Title = x.Title,
-            PublishDate = x.PublishDate,
-            Body = x.Body
-        }));
+        const int pageSize = 5;
+        int start = page * pageSize;
+        int end = start + pageSize;
+        var range = new Range(start, end);
+        
+        var postsInPage = await _service.GetPostRange(range);
+        return Ok(
+            new
+            {
+                page = page,
+                start = start,
+                end = end,
+                posts = postsInPage.Select( x => new
+                {
+                    PostId = x.PostId,
+                    Title = x.Title,
+                    PublishDate = x.PublishDate,
+                    Body = x.Body
+                })
+            }
+        );
+        
     }
 
-    [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetPostById(int id)
+    /// <summary>
+    /// Fetches a post by it's id
+    /// eg. /api/posts/id/2
+    /// </summary>
+    /// <param name="id">the post id</param>
+    /// <returns></returns>
+    [HttpGet("id/{id:int}")]
+    public async Task<IActionResult> GetPostById([FromRoute] int id)
     {
         var post = await _service.GetPostById(id);
         if (post == null)
