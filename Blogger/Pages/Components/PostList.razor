@@ -2,7 +2,7 @@
 @using System.ComponentModel.DataAnnotations
 
 
-<div class="m-5">
+<div class="mt-5 ms-5 me-5 mb-5" style="height: 100%; overflow: auto">
     @foreach (var post in Posts)
     {
         
@@ -14,15 +14,18 @@
             PostId = post.PostId,
             RedirectToEditPage = RedirectToEdit
         };
-        
-        if (post.Body.Length > 100)
-        {
-            model.Body = post.Body.Substring(0, MaxLength - 3) + "...";
-        }
-        else
-        {
-            model.Body = post.Body;
-        }
+
+        var line = post.Body.Split('\n').First();
+
+        post.Body = line;
+        // if (post.Body.Length > 100)
+        // {
+        //     model.Body = post.Body.Substring(0, MaxLength - 3) + "...";
+        // }
+        // else
+        // {
+        //     model.Body = post.Body;
+        // }
 
         <PostCard Model="@model"/>
     }

@@ -4,21 +4,23 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject UserManager<User> UserManager
 
-<div class="container m-2">
-    <h3>My Posts</h3>
-    
-    @if (_user!= null)
+
+<h3>My Posts</h3>
+
+@if (_user!= null)
+{
+    @if (_user.Posts != null && _user.Posts.Any())
     {
-        @if (_user.Posts != null && _user.Posts.Any())
-        {
-            <PostList Posts="@_user?.Posts" RedirectToEdit="true"/>   
-        }
-        else
-        {
-            <h2 class="text-center">You haven't created any posts yet</h2>    
-        }
+        
+        <PostList Posts="@_user?.Posts" RedirectToEdit="true"/>
+        
     }
-</div>
+    else
+    {
+        <h2 class="text-center">You haven't created any posts yet</h2>    
+    }
+}
+
 
 
 
