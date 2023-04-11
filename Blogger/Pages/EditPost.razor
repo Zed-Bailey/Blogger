@@ -2,72 +2,22 @@
 @using Markdig
 @using Microsoft.AspNetCore.Identity
 @using Blogger.Data
-@using System.Security.Claims
 @inject UserManager<User> UserManager
 @inject PostService Service
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavManager
 
-<style>
-    .row {
-        flex: 1;
-        flex-direction: row;
-        flex-wrap: wrap;
-        width: 100%;
-        height: 100%;
-    }
-    
-    .column {
-        display: flex;
-        flex-direction: column;
-        flex-basis: 100%;
-        flex: 1;
-        height: 100%;
-    }
-    
-    textarea {
-        height: 100%;
-        resize: none;
-    }
-    
-    .container {
-        height: 80vh;
-    }
-    
-    .rendered {
-        overflow: auto;
-    }
-    
-</style>
-
 @if (_post != null)
 {
-    <h3>Edit Post</h3>
+    <div style="overflow: auto" class="rz-mb-5 rz-mt-5">
+        <h3>Edit Post</h3>
+        
+        <Editor @bind-HtmlValue="@_html" @bind-Title="@_title"/>
 
-    <div class="container">
-
-        <div class="row">
-            <div class="column">
-                <input class="mb-2" @bind="_title" @bind:event="oninput" placeholder="Post title"/>
-                <textarea @bind="_postMarkdown" @bind:event="oninput" placeholder="post body"></textarea>
-
-                <div class="mt-3">
-                    
-                    <button class="btn btn-danger" @onclick="DeletePost">Delete Post</button>
-                    <button class="btn btn-primary" @onclick="UpdatePost">Save Changes</button>
-                    
-                </div>
-
-            </div>
-
-            <div class="column rendered">
-                <h1>@_title</h1>
-                
-                @((MarkupString)Markdown.ToHtml(_postMarkdown, _pipeline))
-            </div>
-
-        </div>
-
+        <RadzenStack Orientation="Orientation.Horizontal" class="rz-mt-3">
+            <RadzenButton Click="DeletePost" ButtonStyle="ButtonStyle.Danger" Text="Delete" Icon="delete"/>
+            <RadzenButton Click="UpdatePost" ButtonStyle="ButtonStyle.Primary" Text="Update" Icon="update"/>
+        </RadzenStack>
     </div>
 }
 else
@@ -82,11 +32,11 @@ else
     [Parameter]
     public int PostId { get; set; }
 
-    MarkdownPipeline _pipeline;
-    string _postMarkdown = "";
+    
+    string _html = "";
     string _title = "";
     
-    User? _user;
+    // User? _user;
 
     Post? _post;
     
@@ -94,26 +44,24 @@ else
     {
         var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = state.User;
+        
         if (user.Identity.IsAuthenticated)
         {
-            _user = await UserManager.GetUserAsync(user);
+            // _user = await UserManager.GetUserAsync(user);
+            _post = await Service.GetPostById(PostId);
+
+            _title = _post?.Title ?? "title error";
+            _html = _post?.Body ?? "";
         }
-
-        _pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().UseSoftlineBreakAsHardlineBreak().Build();
-        _post = await Service.GetPostById(PostId);
-
-        _title = _post?.Title ?? "";
-        _postMarkdown = _post?.Body ?? "";
         
-
     }
 
     async Task UpdatePost()
     {
-        if (_user != null && _post != null)
+        if (_post != null)
         {
             _post.Title = _title;
-            _post.Body = _postMarkdown;
+            _post.Body = _html;
             await Service.UpdatePost(_post);
         }
         
