@@ -5,10 +5,10 @@ namespace Blogger.Api;
 
 [ApiController]
 [Route("/api/posts")]
-public class ApiPostController : ControllerBase
+public class PostController : ControllerBase
 {
     private readonly PostService _service;
-    public ApiPostController(PostService service)
+    public PostController(PostService service)
     {
         _service = service;
     }
