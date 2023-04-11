@@ -8,77 +8,88 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavManager
 
-<style>
-    .row {
-        flex: 1;
-        flex-direction: row;
-        flex-wrap: wrap;
-        width: 100%;
-        height: 100%;
-    }
+
+
+<div class="m-2">
+    <Editor @bind-HtmlValue="@html"/>
     
-    .column {
-        display: flex;
-        flex-direction: column;
-        flex-basis: 100%;
-        flex: 1;
-        height: 100%;
-    }
-    textarea {
-        height: 100%;
-        resize: none;
-    }
-    
-    .container {
-        height: 80vh;
-    }
-    
-    .rendered {
-        overflow: auto;
-    }
-    
-</style>
-
-
-<h3>Create Post</h3>
-
-<div class="container" >
-
-    <div class="row">
-        <div class="column">
-            <input class="mb-2" @bind="_title" @bind:event="oninput" placeholder="Post title"/>
-            <textarea @bind="_postMarkdown" @bind:event="oninput" placeholder="post body"></textarea>
-
-            <div class="mt-4">
-                @if (_user == null)
-                {
-                    <p>Error while trying to submit post</p>
-                }
-                <button class="btn btn-primary" @onclick="SubmitPost">Post</button>
-            </div>
-
-        </div>
-
-        <div class="column rendered">
-            <h1>@_title</h1>
-            
-            @((MarkupString)Markdown.ToHtml(_postMarkdown, _pipeline))
-        </div>
-
-    </div>
-
+    <RadzenButton Text="Publish" class="mt-2"/>    
 </div>
+
+
+
+
+@* <style> *@
+@*     .row { *@
+@*         flex: 1; *@
+@*         flex-direction: row; *@
+@*         flex-wrap: wrap; *@
+@*         width: 100%; *@
+@*         height: 100%; *@
+@*     } *@
+@*      *@
+@*     .column { *@
+@*         display: flex; *@
+@*         flex-direction: column; *@
+@*         flex-basis: 100%; *@
+@*         flex: 1; *@
+@*         height: 100%; *@
+@*     } *@
+@*     textarea { *@
+@*         height: 100%; *@
+@*         resize: none; *@
+@*     } *@
+@*      *@
+@*     .container { *@
+@*         height: 80vh; *@
+@*     } *@
+@*      *@
+@*     .rendered { *@
+@*         overflow: auto; *@
+@*     } *@
+@*      *@
+@* </style> *@
+@* *@
+@* *@
+@* <h3>Create Post</h3> *@
+@* *@
+@* <div class="container" > *@
+@* *@
+@*     <div class="row"> *@
+@*         <div class="column"> *@
+@*             <input class="mb-2" @bind="_title" @bind:event="oninput" placeholder="Post title"/> *@
+@*             <textarea @bind="_postMarkdown" @bind:event="oninput" placeholder="post body"></textarea> *@
+@* *@
+@*             <div class="mt-4"> *@
+@*                 @if (_user == null) *@
+@*                 { *@
+@*                     <p>Error while trying to submit post</p> *@
+@*                 } *@
+@*                 <button class="btn btn-primary" @onclick="SubmitPost">Post</button> *@
+@*             </div> *@
+@* *@
+@*         </div> *@
+@* *@
+@*         <div class="column rendered"> *@
+@*             <h1>@_title</h1> *@
+@*              *@
+@*             @((MarkupString)Markdown.ToHtml(_postMarkdown, _pipeline)) *@
+@*         </div> *@
+@* *@
+@*     </div> *@
+@* *@
+@* </div> *@
 
 
 
 
 @code {
 
-    MarkdownPipeline _pipeline;
-    string _postMarkdown = "";
-    string _title = "";
+
     
     User? _user;
+
+    string html = "";
     
     protected override async Task OnInitializedAsync()
     {
@@ -88,19 +99,18 @@
         {
             _user = await UserManager.GetUserAsync(user);
         }
-
-        _pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().UseSoftlineBreakAsHardlineBreak().Build();
     }
 
     async Task SubmitPost()
     {
         if (_user != null)
         {
+            
             var post = new Post
             {
                 Author = _user,
-                Title = _title,
-                Body = _postMarkdown,
+                Title = "test",
+                Body = html,
                 PublishDate = DateTime.Now
             };
             
