@@ -7,13 +7,13 @@
 @inject PostService Service
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavManager
-
+@inject NotificationService NotificationService
 
 
 <div class="rz-m-2">
     <Editor @bind-HtmlValue="@html" @bind-Title="@title"/>
     
-    <RadzenButton Text="Publish" class="mt-2"/>    
+    <RadzenButton Text="Publish" class="mt-2" Click="SubmitPost"/>    
 </div>
 
 
@@ -51,7 +51,17 @@
                 PublishDate = DateTime.Now
             };
             
+            var notification = new NotificationMessage
+            {
+                Summary = "Post successfully published",
+                CloseOnClick = true,
+                Severity = NotificationSeverity.Success,
+                Duration = 4000,
+
+            };
+            
             await Service.AddPost(post);
+            NotificationService.Notify(notification);
             NavManager.NavigateTo("/Profile");
         }
         

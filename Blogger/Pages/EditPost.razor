@@ -6,6 +6,7 @@
 @inject PostService Service
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavManager
+@inject NotificationService NotificationService
 
 @if (_post != null)
 {
@@ -63,6 +64,9 @@ else
             _post.Title = _title;
             _post.Body = _html;
             await Service.UpdatePost(_post);
+            var notification = new NotificationMessage { Summary = "Post Updated", Severity = NotificationSeverity.Success, CloseOnClick = true, Duration = 4000 };
+            NotificationService.Notify(notification);
+            
         }
         
     }
@@ -70,7 +74,9 @@ else
 
     async Task DeletePost()
     {
+        var notification = new NotificationMessage { Summary = "Post Deleted", Severity = NotificationSeverity.Info, CloseOnClick = true, Duration = 4000 };
         await Service.DeletePost(_post);
+        NotificationService.Notify(notification);
         NavManager.NavigateTo("/Profile");
     }
 
