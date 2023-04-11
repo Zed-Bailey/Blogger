@@ -1,17 +1,7 @@
-<RadzenRow JustifyContent="JustifyContent.SpaceEvenly">
-    <RadzenColumn>
-        <RadzenHtmlEditor @bind-Value="@HtmlValue" Change="UpdateHtmlValue" Style="height: 800px; width: 100%">
-            <RadzenHtmlEditorCustomTool CommandName="InsertImage" Icon="image">
-                
-            </RadzenHtmlEditorCustomTool>
-        </RadzenHtmlEditor>
-        
-    </RadzenColumn>
-    
-    <RadzenColumn class="rz-border-color-black" Style="height: 800px; overflow: auto; border-radius: 10px; border: solid 1px; padding: 10px;">
-        @((MarkupString)HtmlValue)
-    </RadzenColumn>
-</RadzenRow>
+
+<RadzenTextBox @bind-Value="@Title" Placeholder="Post Title" Change="UpdateTitleValue" Style="width: 100%" class="rz-mb-3"/> 
+<RadzenHtmlEditor @bind-Value="@HtmlValue" Change="UpdateHtmlValue" Style="height: 80vh; width: 100%">
+</RadzenHtmlEditor>
 
 @code {
 
@@ -19,11 +9,22 @@
     public string HtmlValue { get; set; }
     
     [Parameter]
+    public string Title { get; set; }
+    
+    [Parameter]
     public EventCallback<string> HtmlValueChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<string> TitleChanged { get; set; }
 
     async Task UpdateHtmlValue(string html)
     {
         await HtmlValueChanged.InvokeAsync(html);
+    }
+
+    async Task UpdateTitleValue(string value)
+    {
+        await TitleChanged.InvokeAsync(value);
     }
 
     async Task InsertImage(RadzenHtmlEditor editor)
