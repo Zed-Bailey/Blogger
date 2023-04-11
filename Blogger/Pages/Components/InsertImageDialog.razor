@@ -1,0 +1,42 @@
+@using Blogger.Data
+@inject DialogService DialogService
+
+<div>
+    <RadzenStack>
+        
+        <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-mb-0">Image Web Url</RadzenText>
+        <RadzenTextBox @bind-Value="@url" Placeholder="Image web url"/>
+        
+        <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-mb-0">Image Alt Text</RadzenText>
+        <RadzenTextBox @bind-Value="@altText" Placeholder="Image alt text"/>
+        
+        <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-mb-0">Image Width</RadzenText>
+        <RadzenNumeric ShowUpDown="false" TValue="int" @bind-Value="width" Placeholder="Image width (px)"/>
+        
+        <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-mb-0">Image Height</RadzenText>
+        <RadzenNumeric ShowUpDown="false" TValue="int" @bind-Value="height" Placeholder="Image height (px)"/>
+
+        <RadzenButton Text="Insert Image" Click="Insert"></RadzenButton>
+    </RadzenStack>
+</div>
+
+@code {
+    string url = "";
+    string altText = "";
+    
+    int width;
+    int height;
+    
+    void Insert()
+    {
+        var returnData = new ImageInsertModel(
+            url,
+            altText,
+            width,
+            height
+        );
+        
+        DialogService.Close(returnData);
+    }
+
+}

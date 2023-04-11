@@ -1,6 +1,42 @@
+@using Blogger.Data
+@using System.Text
+@inject DialogService DialogService
 
 <RadzenTextBox @bind-Value="@Title" Placeholder="Post Title" Change="UpdateTitleValue" Style="width: 100%" class="rz-mb-3"/> 
-<RadzenHtmlEditor @bind-Value="@HtmlValue" Change="UpdateHtmlValue" Style="height: 80vh; width: 100%">
+<RadzenHtmlEditor @bind-Value="@HtmlValue" Change="UpdateHtmlValue" Style="height: 80vh; width: 100%" Execute="@OnExecute">
+    
+    
+    <RadzenHtmlEditorUndo />
+    <RadzenHtmlEditorRedo />
+    <RadzenHtmlEditorSeparator />
+    <RadzenHtmlEditorBold />
+    <RadzenHtmlEditorItalic />
+    <RadzenHtmlEditorUnderline />
+    <RadzenHtmlEditorStrikeThrough />
+    <RadzenHtmlEditorSeparator />
+    <RadzenHtmlEditorAlignLeft />
+    <RadzenHtmlEditorAlignCenter />
+    <RadzenHtmlEditorAlignRight />
+    <RadzenHtmlEditorJustify />
+    <RadzenHtmlEditorSeparator />
+    <RadzenHtmlEditorIndent />
+    <RadzenHtmlEditorOutdent />
+    <RadzenHtmlEditorUnorderedList />
+    <RadzenHtmlEditorOrderedList />
+    <RadzenHtmlEditorSeparator />
+    <RadzenHtmlEditorColor />
+    <RadzenHtmlEditorBackground />
+    <RadzenHtmlEditorRemoveFormat />
+    <RadzenHtmlEditorSeparator />
+    <RadzenHtmlEditorSubscript />
+    <RadzenHtmlEditorSuperscript />
+    <RadzenHtmlEditorSeparator />
+    <RadzenHtmlEditorLink />
+    <RadzenHtmlEditorUnlink />
+    <RadzenHtmlEditorFontName />
+    <RadzenHtmlEditorFontSize />
+    <RadzenHtmlEditorCustomTool Icon="image" CommandName="InsertImage"/>
+    
 </RadzenHtmlEditor>
 
 @code {
@@ -27,8 +63,39 @@
         await TitleChanged.InvokeAsync(value);
     }
 
-    async Task InsertImage(RadzenHtmlEditor editor)
+    async Task OnExecute(HtmlEditorExecuteEventArgs args)
     {
-        
+        if (args.CommandName == "InsertImage")
+        {
+            // required otherwise html will be inserted at the start of the editor
+            await args.Editor.SaveSelectionAsync();
+            
+            ImageInsertModel? result = await DialogService.OpenAsync<InsertImageDialog>("Insert Image", null, new DialogOptions
+            {
+                CloseDialogOnOverlayClick = true,
+                ShowClose = true,
+                ShowTitle = true
+            });
+            
+            // restore users cursor position
+            await args.Editor.RestoreSelectionAsync();
+            
+            // if null, dialog was closed so nothing is returned
+            if (result == null)
+                return;
+            
+
+            var html = new StringBuilder();
+            html.AppendFormat("<img src=\"{0}\"", result.url);
+            html.AppendFormat(" alt=\"{0}\"", result.altText);
+            html.AppendFormat(" width=\"{0}\"", result.width);
+            html.AppendFormat(" height=\"{0}\"", result.height);
+            html.AppendFormat(">");
+
+            
+            await args.Editor.ExecuteCommandAsync("insertHTML", html.ToString());
+            
+            // await args.Editor.ExecuteCommandAsync(HtmlEditorCommands.InsertHtml, imageHtml);
+        }
     }
 }
