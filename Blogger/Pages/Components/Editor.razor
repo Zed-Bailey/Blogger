@@ -35,6 +35,7 @@
     <RadzenHtmlEditorUnlink />
     <RadzenHtmlEditorFontName />
     <RadzenHtmlEditorFontSize />
+    <RadzenHtmlEditorSource/>
     <RadzenHtmlEditorCustomTool Icon="image" CommandName="InsertImage"/>
     
 </RadzenHtmlEditor>
@@ -84,12 +85,21 @@
             if (result == null)
                 return;
             
-
+            
             var html = new StringBuilder();
             html.AppendFormat("<img src=\"{0}\"", result.url);
             html.AppendFormat(" alt=\"{0}\"", result.altText);
-            html.AppendFormat(" width=\"{0}\"", result.width);
-            html.AppendFormat(" height=\"{0}\"", result.height);
+            
+            if (result.width != null)
+            {
+                html.AppendFormat(" width=\"{0}\"", result.width);    
+            }
+
+            if (result.height != null)
+            {
+                html.AppendFormat(" height=\"{0}\"", result.height);    
+            }
+            
             html.AppendFormat(">");
 
             
