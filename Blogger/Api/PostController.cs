@@ -25,16 +25,13 @@ public class PostController : ControllerBase
     {
         const int pageSize = 5;
         int start = page * pageSize;
-        int end = start + pageSize;
-        var range = new Range(start, end);
-        
-        var postsInPage = await _service.GetPostRange(range);
+
+        var postsInPage = await _service.GetPostRange(start, pageSize);
+        // var postsInPage = await _service.GetPostRange(range);
         return Ok(
             new
             {
                 page = page,
-                start = start,
-                end = end,
                 posts = postsInPage.Select( x => new
                 {
                     PostId = x.PostId,

@@ -36,16 +36,20 @@ public class PostService
         return await _context.Posts.FindAsync(withId);
     }
 
-    public async Task<List<Post>> GetPostRange(Range range)
+    public async Task<List<Post>> GetPostRange(int skip, int take)
     {
-        // doesn't seem like linq can parse the following query?
-        // var posts = await _context.Posts.Take(range).ToListAsync();
-        
-        var posts = await _context.Posts
+        return await _context.Posts
+            .Include(x => x.Author)
+            .Skip(skip)
+            .Take(take)
             .ToListAsync();
-        
-        return posts.Take(range).ToList();
     }
+
+    public async Task<int> GetTotalPostCount()
+    {
+        return await _context.Posts.CountAsync();
+    }
+    
     public async Task AddPost(Post post)
     {
         _context.Posts.Add(post);
