@@ -3,11 +3,24 @@
 @inject PostService PostService;
 
 <PageTitle>Index</PageTitle>
+<div class="rz-m-3">
+    <RadzenTabs @bind-SelectedIndex="@selectedTabIndex" >
+        <Tabs>
+            <RadzenTabsItem Text="Recent Posts">
+                <PostList Posts="@_posts"/>
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="All Posts">
+                <AllPosts/>
+            </RadzenTabsItem>
+        </Tabs>
+    </RadzenTabs>    
+</div>
 
-<PostList Posts="@_posts"/>
+
 
 @code
 {
+    int selectedTabIndex = 0;
     List<Post> _posts;
     
     protected override async Task OnInitializedAsync()

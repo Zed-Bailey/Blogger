@@ -1,0 +1,48 @@
+@using Blogger.Data
+@inject PostService PostService 
+
+<RadzenDataList WrapItems="false" AllowPaging="false" Data="@posts" TItem="Post">
+    <Template Context="post">
+        <PostCard Model="@(new PostCardModel { Title = post.Title, PostId = post.PostId, Author = post.Author.UserName, Date = post.PublishDate})"/>
+        
+        @* <RadzenStack Orientation="Orientation.Vertical"> *@
+        @*     <RadzenText TextStyle="TextStyle.DisplayH4">@post.Title</RadzenText> *@
+        @*     <RadzenText TextStyle="TextStyle.Subtitle1">Posted by @post.Author.UserName</RadzenText> *@
+        @*     <RadzenText TextStyle="TextStyle.Subtitle2">@post.PublishDate.ToShortDateString()</RadzenText> *@
+        @*     <RadzenButton Text="Read more..." ButtonStyle="ButtonStyle.Primary" Click="clickedPost(@post.PostId)"/> *@
+        @* </RadzenStack> *@
+    </Template>
+</RadzenDataList>
+
+<RadzenPager ShowPagingSummary="true" PagingSummaryFormat="@pagingSummaryFormat" HorizontalAlign="HorizontalAlign.Center" Count="count" PageSize="@pageSize" PageNumbersCount="5" PageChanged="@PageChanged" />
+
+@code {
+    string pagingSummaryFormat = "Displaying page {0} of {1} (total {2} records)";
+    int pageSize = 6;
+    int count;
+    
+    IEnumerable<Post> posts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        count = await PostService.GetTotalPostCount();
+        posts = await GetPosts(0, pageSize);
+    }
+
+    async void PageChanged(PagerEventArgs args)
+    {
+        posts = await GetPosts(args.Skip, args.Top);
+    }
+
+    async Task<IEnumerable<Post>> GetPosts(int skip, int take)
+    {
+        return await PostService.GetPostRange(skip, take);
+    }
+
+    void clickedPost(int id)
+    {
+        Console.WriteLine($"clicked post with id = {id}");
+    }
+}
