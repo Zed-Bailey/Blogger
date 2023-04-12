@@ -2,7 +2,7 @@
 @using System.ComponentModel.DataAnnotations
 
 
-<div class="mt-5 ms-5 me-5 mb-5" style="height: 100%; overflow: auto">
+<div class="rz-m-5" style="height: 100%; overflow: auto">
     @foreach (var post in Posts)
     {
         
@@ -15,19 +15,9 @@
             RedirectToEditPage = RedirectToEdit
         };
 
-        var line = post.Body.Split('\n').First();
-
-        post.Body = line;
-        // if (post.Body.Length > 100)
-        // {
-        //     model.Body = post.Body.Substring(0, MaxLength - 3) + "...";
-        // }
-        // else
-        // {
-        //     model.Body = post.Body;
-        // }
-
-        <PostCard Model="@model"/>
+        <div class="rz-mb-5">
+            <PostCard Model="@model"/>
+        </div>
     }
 </div>
 
